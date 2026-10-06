@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA Studio One - 極致聲學與工藝美學</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Cormorant Garamond -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f8f9fa',
+                            100: '#f1f3f5',
+                            800: '#1d1d1f',
+                            900: '#121212',
+                            gold: '#d4af37',
+                            accent: '#2c3e50'
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(1deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        /* Staggered Scroll Reveal Base Styles */
+        .reveal-phase1 {
+            opacity: 0;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity;
+        }
+        .reveal-phase2 {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transition-delay: 0.2s; /* Sequence timing delay */
+            will-change: transform, opacity;
+        }
+        .reveal-phase3 {
+            opacity: 0;
+            transform: scale(0.92);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            transition-delay: 0.4s; /* Sequence timing delay */
+            will-change: transform, opacity;
+        }
+
+        /* Activated Classes */
+        .revealed .reveal-phase1 {
+            opacity: 1;
+        }
+        .revealed .reveal-phase2 {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .revealed .reveal-phase3 {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Parallax Container Setup */
+        .parallax-bg {
+            will-change: transform;
+            transition: transform 0.1s linear;
+        }
+
+        /* High quality image hover effect */
+        .img-zoom-container {
+            overflow: hidden;
+        }
+        .img-zoom-container img {
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .img-zoom-container:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Accessibility: Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            .reveal-phase1, .reveal-phase2, .reveal-phase3 {
+                transition: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
+            .animate-float {
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#0b0b0c] text-neutral-200 font-sans antialiased overflow-x-hidden selection:bg-neutral-700 selection:text-white">
+
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-neutral-400 via-white to-neutral-400 z-50 transition-all duration-75" style="width: 0%;"></div>
+
+    <!-- Navigation Bar -->
+    <header id="navbar" class="fixed top-0 left-0 w-full z-40 transition-all duration-300 backdrop-blur-md bg-[#0b0b0c]/70 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center transition-transform duration-500 group-hover:rotate-180 group-hover:border-white">
+                    <span class="block w-2 h-2 bg-white rounded-full"></span>
+                </div>
+                <span class="font-serif text-2xl tracking-widest text-white font-normal uppercase">AURA</span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-10 text-xs tracking-[0.2em] uppercase font-light text-neutral-400">
+                <a href="#hero" class="hover:text-white transition-colors">概覽</a>
+                <a href="#banner" class="hover:text-white transition-colors">概念</a>
+                <a href="#features" class="hover:text-white transition-colors">核心特色</a>
+                <a href="#cta" class="hover:text-white transition-colors">預訂</a>
+            </nav>
+
+            <!-- Nav CTA Button -->
+            <div class="hidden md:block">
+                <a href="#cta" class="px-5 py-2.5 text-xs tracking-widest uppercase border border-white/20 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+                    立即購買
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menu-btn" class="md:hidden text-white focus:outline-none p-2" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#0b0b0c] border-b border-white/10 px-6 py-6 space-y-4">
+            <a href="#hero" class="block text-sm tracking-widest uppercase text-neutral-300 hover:text-white mobile-link">概覽</a>
+            <a href="#banner" class="block text-sm tracking-widest uppercase text-neutral-300 hover:text-white mobile-link">概念</a>
+            <a href="#features" class="block text-sm tracking-widest uppercase text-neutral-300 hover:text-white mobile-link">核心特色</a>
+            <a href="#cta" class="block text-sm tracking-widest uppercase text-neutral-300 hover:text-white mobile-link">預訂</a>
+            <a href="#cta" class="inline-block mt-2 px-6 py-2.5 text-xs tracking-widest uppercase bg-white text-black font-medium rounded-full">立即購買</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION (100vh) -->
+    <section id="hero" class="relative min-h-screen h-screen w-full flex flex-col justify-center items-center pt-20 px-6 overflow-hidden bg-gradient-to-b from-[#111115] via-[#0b0b0c] to-[#0b0b0c]">
+        <!-- Subtle Ambient Background Light -->
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-10 left-10 w-72 h-72 bg-neutral-800/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full py-12 z-10">
+            <!-- Left Text Content -->
+            <div class="lg:col-span-6 flex flex-col justify-center text-left space-y-6">
+                <!-- Subtitle Tag -->
+                <div class="reveal-phase1 inline-flex items-center space-x-3">
+                    <span class="h-[1px] w-8 bg-neutral-500"></span>
+                    <span class="text-xs uppercase tracking-[0.3em] text-neutral-400 font-light">AURA Studio One</span>
+                </div>
+
+                <!-- Main Title -->
+                <h1 class="reveal-phase2 font-serif text-5xl sm:text-6xl md:text-7xl font-normal tracking-tight text-white leading-[1.1]">
+                    靜謐極境<br>
+                    <span class="italic font-light text-neutral-400">音致臻完美</span>
+                </h1>
+
+                <!-- Description -->
+                <p class="reveal-phase2 text-sm sm:text-base text-neutral-400 font-light leading-relaxed max-w-lg">
+                    純粹的沉浸感，來自對聲音微細調校的堅持。Studio One 結合航太級輕量鈦金屬與專利主動降噪技術，打造純淨無瑕的聽覺詩篇。
+                </p>
+
+                <!-- Dual CTA Buttons -->
+                <div class="reveal-phase3 pt-4 flex flex-wrap items-center gap-4">
+                    <a href="#cta" class="px-8 py-4 bg-white text-black text-xs font-medium tracking-[0.2em] uppercase rounded-full hover:bg-neutral-200 transition-all duration-300 shadow-lg shadow-white/5 hover:scale-[1.02]">
+                        立即購買
+                    </a>
+                    <a href="#features" class="px-8 py-4 border border-white/20 text-white text-xs font-medium tracking-[0.2em] uppercase rounded-full hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
+                        了解更多
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Visual Focal Point -->
+            <div class="lg:col-span-6 flex items-center justify-center relative">
+                <!-- Product Background Frame Layer -->
+                <div class="reveal-phase1 absolute w-72 h-72 sm:w-96 sm:h-96 border border-white/10 rounded-full animate-pulse-slow"></div>
+                <div class="reveal-phase1 absolute w-96 h-96 sm:w-[450px] sm:h-[450px] border border-white/5 rounded-full"></div>
+                
+                <!-- Main Product Image with Subtle Floating Effect -->
+                <div class="reveal-phase3 relative z-10 animate-float max-w-xs sm:max-w-md lg:max-w-full">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=80" 
+                         alt="AURA Studio One Headphone" 
+                         class="w-full h-auto object-contain filter drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)] rounded-2xl"
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x800/1e1e24/ffffff?text=AURA+Studio+One';">
+                </div>
+            </div>
+        </div>
+
+        <!-- Down Arrow Indicator -->
+        <a href="#banner" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-neutral-500 hover:text-white transition-colors duration-300 animate-bounce">
+            <i class="fa-solid fa-arrow-down text-sm"></i>
+        </a>
+    </section>
+
+    <!-- BANNER SECTION (60-80vh with Parallax Effect) -->
+    <section id="banner" class="relative h-[70vh] w-full overflow-hidden flex items-center justify-center my-12">
+        <!-- Parallax Background Image -->
+        <div id="parallax-bg" class="parallax-bg absolute inset-0 w-full h-[120%] -top-[10%] bg-cover bg-center filter brightness-[0.45] contrast-[1.1]" 
+             style="background-image: url('https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=2000&q=80');">
+        </div>
+
+        <!-- Subtle Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0b0b0c] via-transparent to-[#0b0b0c]"></div>
+
+        <!-- Foreground Typography (Maintains Relative Stability) -->
+        <div class="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-4">
+            <p class="reveal-phase1 text-xs tracking-[0.4em] uppercase text-neutral-400 font-light">Architecture of Sound</p>
+            <h2 class="reveal-phase2 font-serif text-3xl sm:text-5xl md:text-6xl text-white font-normal italic tracking-wide leading-tight">
+                " Designed for the way you live. "
+            </h2>
+            <p class="reveal-phase3 text-xs sm:text-sm text-neutral-300 font-light tracking-widest uppercase max-w-md mx-auto pt-2">
+                為生活細節而生的極致無聲藝術
+            </p>
+        </div>
+    </section>
+
+    <!-- PRODUCT FEATURES SECTION (Zig-Zag Layout) -->
+    <section id="features" class="py-24 sm:py-32 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 space-y-32">
+        
+        <!-- Section Title -->
+        <div class="text-center max-w-2xl mx-auto space-y-4">
+            <span class="text-xs uppercase tracking-[0.3em] text-neutral-500 font-light">Craftsmanship & Technology</span>
+            <h2 class="font-serif text-3xl sm:text-4xl text-white font-normal">核心特色與工藝細節</h2>
+            <div class="w-12 h-[1px] bg-white/20 mx-auto"></div>
+        </div>
+
+        <!-- FEATURE 1: Image Left / Text Right -->
+        <div class="reveal-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <!-- Image Left -->
+            <div class="lg:col-span-7">
+                <div class="reveal-phase3 img-zoom-container rounded-2xl bg-neutral-900/50 border border-white/5 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=1200&q=80" 
+                         alt="Sound Precision" 
+                         class="w-full h-[380px] sm:h-[480px] object-cover"
+                         onerror="this.onerror=null; this.src='https://placehold.co/1200x800/1c1c21/ffffff?text=Acoustic+Engine';">
+                </div>
+            </div>
+            <!-- Text Right -->
+            <div class="lg:col-span-5 space-y-6">
+                <span class="reveal-phase1 text-xs font-mono text-neutral-500 tracking-widest">01 / ACOUSTICS</span>
+                <h3 class="reveal-phase2 font-serif text-3xl sm:text-4xl text-white font-normal">聲學重塑<br><span class="italic text-neutral-400 font-light">精準無瑕的頻率響應</span></h3>
+                <p class="reveal-phase2 text-sm text-neutral-400 font-light leading-relaxed">
+                    採用 40mm 鈹振膜單體與客製化超高音腔體設計，從 5Hz 的深沉低音到 40,000Hz 的清亮高音，完整還原錄音室現場等級的音樂層次細節。
+                </p>
+                <ul class="reveal-phase3 space-y-3 pt-2 text-xs text-neutral-300 font-light tracking-wider">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neutral-500"></i> 40mm 鈹金屬驅動單體</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neutral-500"></i> 超低失真無失真藍牙 5.3</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neutral-500"></i> 獨立空間音訊調校晶片</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FEATURE 2: Text Left / Image Right -->
+        <div class="reveal-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <!-- Text Left -->
+            <div class="lg:col-span-5 space-y-6 lg:order-1 order-2">
+                <span class="reveal-phase1 text-xs font-mono text-neutral-500 tracking-widest">02 / SILENCE</span>
+                <h3 class="reveal-phase2 font-serif text-3xl sm:text-4xl text-white font-normal">智慧靜界<br><span class="italic text-neutral-400 font-light">全場域動態主動降噪</span></h3>
+                <p class="reveal-phase2 text-sm text-neutral-400 font-light leading-relaxed">
+                    內建 8 組多向高精度麥克風與獨立 AI 聲學晶片，每秒進行 48,000 次環境噪音監測，即時調整反向聲波，為您瞬間隔絕喧囂繁雜。
+                </p>
+                <ul class="reveal-phase3 space-y-3 pt-2 text-xs text-neutral-300 font-light tracking-wider">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neutral-500"></i> -42dB 自適應主動降噪</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neutral-500"></i> 智慧透聲通透模式</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neutral-500"></i> 風噪自動防護演算</li>
+                </ul>
+            </div>
+            <!-- Image Right -->
+            <div class="lg:col-span-7 lg:order-2 order-1">
+                <div class="reveal-phase3 img-zoom-container rounded-2xl bg-neutral-900/50 border border-white/5 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1545127398-14699f92334b?auto=format&fit=crop&w=1200&q=80" 
+                         alt="Active Noise Cancellation" 
+                         class="w-full h-[380px] sm:h-[480px] object-cover"
+                         onerror="this.onerror=null; this.src='https://placehold.co/1200x800/1c1c21/ffffff?text=Noise+Cancellation';">
+                </div>
+            </div>
+        </div>
+
+        <!-- FEATURE 3: Image Left / Text Right -->
+        <div class="reveal-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <!-- Image Left -->
+            <div class="lg:col-span-7">
+                <div class="reveal-phase3 img-zoom-container rounded-2xl bg-neutral-900/50 border border-white/5 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=1200&q=80" 
+                         alt="Ergonomic & Material" 
+                         class="w-full h-[380px] sm:h-[480px] object-cover"
+                         onerror="this.onerror=null; this.src='https://placehold.co/1200x800/1c1c21/ffffff?text=Premium+Materials';">
+                </div>
+            </div>
+            <!-- Text Right -->
+            <div class="lg:col-span-5 space-y-6">
+                <span class="reveal-phase1 text-xs font-mono text-neutral-500 tracking-widest">03 / ERGONOMICS</span>
+                <h3 class="reveal-phase2 font-serif text-3xl sm:text-4xl text-white font-normal">極致舒適<br><span class="italic text-neutral-400 font-light">奢華皮革與航太級鈦合金</span></h3>
+                <p class="reveal-phase2 text-sm text-neutral-400 font-light leading-relaxed">
+                    精選頂級小羊皮耳罩配以慢回彈記憶棉，搭配極輕量化鈦合金懸臂構造，完美勻稱分配配戴壓力，即便是整日聆聽亦感覺輕盈無負擔。
+                </p>
+                <ul class="reveal-phase3 space-y-3 pt-2 text-xs text-neutral-300 font-light tracking-wider">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neutral-500"></i> 40 小時超長續航電力</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neutral-500"></i> 快充 15 分鐘可用 6 小時</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neutral-500"></i> 人工工學零壓感結構</li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- CTA SECTION -->
+    <section id="cta" class="py-24 sm:py-32 px-6 max-w-6xl mx-auto text-center">
+        <div class="reveal-container relative rounded-3xl p-10 sm:p-20 bg-gradient-to-b from-neutral-900 to-[#121215] border border-white/10 overflow-hidden shadow-2xl">
+            <!-- Background Glow -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+
+            <div class="relative z-10 space-y-8 max-w-2xl mx-auto">
+                <span class="reveal-phase1 text-xs uppercase tracking-[0.4em] text-neutral-400 font-light">Limited Availability</span>
+                
+                <h2 class="reveal-phase2 font-serif text-4xl sm:text-6xl text-white font-normal leading-tight">
+                    即刻重塑您的<br><span class="italic font-light text-neutral-400">私人聲音領域</span>
+                </h2>
+                
+                <p class="reveal-phase2 text-sm text-neutral-400 font-light leading-relaxed">
+                    專屬限量典藏版現正開放預訂。全系列享受 2 年原廠保固與全球免費特快配送服務。
+                </p>
+
+                <!-- Micro-animated Interactive Large CTA Button -->
+                <div class="reveal-phase3 pt-4">
+                    <a href="#" id="main-cta-btn" 
+                       class="inline-block px-12 py-5 bg-white text-black font-medium text-xs tracking-[0.25em] uppercase rounded-full 
+                              transition-all duration-500 transform hover:-translate-y-1.5 hover:scale-105 
+                              hover:bg-neutral-100 hover:shadow-[0_20px_40px_rgba(255,255,255,0.25)] active:translate-y-0 active:scale-100">
+                       立即訂購 · NT$ 14,800
+                    </a>
+                </div>
+
+                <div class="reveal-phase3 flex items-center justify-center gap-8 text-xs text-neutral-500 font-light pt-6">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-truck-fast"></i> 免運費</span>
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-shield-halved"></i> 2年原廠保固</span>
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-rotate-left"></i> 14天無條件退換</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="border-t border-white/10 bg-[#08080a] py-16 px-6 sm:px-8 lg:px-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 pb-12 border-b border-white/5">
+            <!-- Brand & Logo -->
+            <div class="md:col-span-5 space-y-4">
+                <a href="#" class="flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-full border border-white/30 flex items-center justify-center">
+                        <span class="block w-1.5 h-1.5 bg-white rounded-full"></span>
+                    </div>
+                    <span class="font-serif text-2xl tracking-widest text-white uppercase">AURA</span>
+                </a>
+                <p class="text-xs text-neutral-500 font-light max-w-sm leading-relaxed">
+                    專注於極致聲学技術與當代工藝美學。為品味追求者打造無瑕沉浸的聽覺體驗。
+                </p>
+            </div>
+
+            <!-- Navigation Anchors -->
+            <div class="md:col-span-4 space-y-3">
+                <h4 class="text-xs font-mono uppercase tracking-widest text-white">頁面導覽</h4>
+                <ul class="space-y-2 text-xs text-neutral-400 font-light">
+                    <li><a href="#hero" class="hover:text-white transition-colors">產品概覽 (Hero)</a></li>
+                    <li><a href="#banner" class="hover:text-white transition-colors">沉浸視覺 (Banner)</a></li>
+                    <li><a href="#features" class="hover:text-white transition-colors">核心特色 (Features)</a></li>
+                    <li><a href="#cta" class="hover:text-white transition-colors">立即預訂 (Action)</a></li>
+                </ul>
+            </div>
+
+            <!-- Social Links -->
+            <div class="md:col-span-3 space-y-3">
+                <h4 class="text-xs font-mono uppercase tracking-widest text-white">關注我們</h4>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-neutral-400 hover:text-white hover:border-white transition-colors" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram text-sm"></i>
+                    </a>
+                    <a href="#" class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-neutral-400 hover:text-white hover:border-white transition-colors" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f text-sm"></i>
+                    </a>
+                    <a href="#" class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-neutral-400 hover:text-white hover:border-white transition-colors" aria-label="Twitter">
+                        <i class="fa-brands fa-x-twitter text-sm"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-600 font-light gap-4">
+            <p>&copy; 2026 AURA Audio Systems Inc. All rights reserved.</p>
+            <p class="tracking-wider">設計規範專案 ALPHA · 作業藍圖展示頁面</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Scroll Progress Bar
+            const progressBar = document.getElementById('scroll-progress');
+            window.addEventListener('scroll', () => {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = (window.scrollY / totalHeight) * 100;
+                progressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+            });
+
+            // 2. Parallax Effect logic with GPU acceleration
+            const parallaxBg = document.getElementById('parallax-bg');
+            let latestKnownScrollY = 0;
+            let ticking = false;
+
+            function updateParallax() {
+                if (parallaxBg) {
+                    const bannerSection = document.getElementById('banner');
+                    const rect = bannerSection.getBoundingClientRect();
+                    // Check if banner is inside viewport
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        const speed = 0.3; // Parallax speed factor
+                        const yPos = (rect.top) * speed;
+                        parallaxBg.style.transform = `translate3d(0, ${yPos}px, 0)`;
+                    }
+                }
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', () => {
+                latestKnownScrollY = window.scrollY;
+                if (!ticking) {
+                    window.requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            });
+
+            // 3. Staggered Scroll Reveal Activation (Phase 1 -> Phase 2 -> Phase 3)
+            // Using IntersectionObserver for high performance
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -10% 0px',
+                threshold: 0.15
+            };
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        // Optional: unobserve if you only want to trigger once
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Observe Hero elements immediately
+            const heroSection = document.getElementById('hero');
+            if (heroSection) {
+                heroSection.classList.add('revealed');
+            }
+
+            // Observe all containers with staggered elements
+            const targetsToObserve = document.querySelectorAll('#banner, .reveal-container, #cta');
+            targetsToObserve.forEach(target => {
+                revealObserver.observe(target);
+            });
+
+            // 4. Mobile Menu Drawer Toggle
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            // 5. Main CTA Button Interaction Effect Feedback
+            const mainCtaBtn = document.getElementById('main-cta-btn');
+            if (mainCtaBtn) {
+                mainCtaBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Visual feedback ripple or text change
+                    const originalText = mainCtaBtn.innerText;
+                    mainCtaBtn.innerText = '已加入預訂清單 ✓';
+                    mainCtaBtn.classList.add('bg-neutral-200');
+                    setTimeout(() => {
+                        mainCtaBtn.innerText = originalText;
+                    }, 2500);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
